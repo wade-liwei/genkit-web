@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"maps"
 	"net/http"
@@ -110,11 +111,23 @@ func handler(a core.Action, params *handlerParams) func(http.ResponseWriter, *ht
 		var body struct {
 			Data json.RawMessage `json:"data"`
 		}
+
 		if r.Body != nil && r.ContentLength > 0 {
-			defer r.Body.Close()
-			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-				return core.NewPublicError(core.INVALID_ARGUMENT, err.Error(), nil)
+
+        	defer r.Body.Close()
+            // if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+            // 	return core.NewPublicError(core.INVALID_ARGUMENT, err.Error(), nil)
+			// }
+
+			// 读取 r.Body 内容
+			bodyBytes, err := io.ReadAll(r.Body)
+			if err != nil {
+				return core.NewPublicError(core.INVALID_ARGUMENT, "failed to read request body: "+err.Error(), nil)
 			}
+
+			// 直接将 bodyBytes 赋值给 body.Data
+			body.Data = bodyBytes
+
 		}
 
 		stream, err := parseBoolQueryParam(r, "stream")
