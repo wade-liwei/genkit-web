@@ -187,6 +187,11 @@ var (
 	}
 )
 
+func ListModels(provider string) (map[string]ai.ModelInfo, error) {
+	return listModels(provider)
+}
+
+
 // listModels returns a map of supported models and their capabilities
 // based on the detected backend
 func listModels(provider string) (map[string]ai.ModelInfo, error) {
@@ -217,6 +222,10 @@ func listModels(provider string) (map[string]ai.ModelInfo, error) {
 		}
 	}
 	return models, nil
+}
+
+func ListEmbedders(backend genai.Backend) ([]string, error) {
+	return listEmbedders(backend)
 }
 
 // listEmbedders returns a list of supported embedders based on the

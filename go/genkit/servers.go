@@ -157,6 +157,7 @@ func handler(a core.Action, params *handlerParams) func(http.ResponseWriter, *ht
 		}
 
 		ctx := r.Context()
+
 		if params.ContextProviders != nil {
 			for _, ctxProvider := range params.ContextProviders {
 				headers := make(map[string]string, len(r.Header))

@@ -17,6 +17,7 @@ import (
 
 const (
 	googleAIProvider = "googleai"
+	GoogleAIProvider = "googleai"
 	vertexAIProvider = "vertexai"
 
 	googleAILabelPrefix = "Google AI"

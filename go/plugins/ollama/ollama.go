@@ -37,6 +37,7 @@ import (
 )
 
 const provider = "ollama"
+const Provider = "ollama"
 
 var (
 	mediaSupportedModels = []string{"llava", "bakllava", "llava-llama3", "llava:13b", "llava:7b", "llava:latest"}
@@ -56,6 +57,30 @@ var (
 		ai.RoleTool:   "tool",
 	}
 )
+
+
+// ListModels returns a map of media-supported models and their capabilities
+func ListModels() (map[string]ai.ModelInfo, error) {
+    models := make(map[string]ai.ModelInfo, len(mediaSupportedModels))
+    for _, modelName := range mediaSupportedModels {
+        // Normalize model name by removing version tags (e.g., "llava:13b" -> "llava")
+        baseName := strings.Split(modelName, ":")[0]
+        models[modelName] = ai.ModelInfo{
+            Label: "Ollama - " + baseName,
+            Supports: &ai.ModelSupports{
+                Multiturn:  true,
+                SystemRole: true,
+                Media:      true,  // All models in mediaSupportedModels support media
+                Tools:      false, // None of these models are in toolSupportedModels
+            },
+            Versions: []string{},
+        }
+    }
+
+    return models, nil
+}
+
+
 
 func (o *Ollama) DefineModel(g *genkit.Genkit, model ModelDefinition, info *ai.ModelInfo) ai.Model {
 	o.mu.Lock()
